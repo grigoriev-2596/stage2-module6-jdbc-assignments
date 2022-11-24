@@ -4,14 +4,15 @@ import javax.sql.DataSource;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.postgresql.ds.common.BaseDataSource;
-import org.postgresql.jdbc3.Jdbc3PoolingDataSource;
 
-import java.io.PrintWriter;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.ConnectionBuilder;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 @Getter
@@ -20,12 +21,16 @@ public class CustomDataSource implements DataSource {
     private static volatile CustomDataSource instance;
     private final CustomConnector connector = new CustomConnector();
     private PrintWriter logWriter;
-    static private int loginTimeout = 0;
-
+    private int loginTimeout = 0;
     private final String driver;
     private final String url;
     private final String name;
     private final String password;
+    private static final String PROPERTIES_PATH = "src/main/resources/app.properties";
+    private static final String PROPERTY_PASSWORD = "postgres.password";
+    private static final String PROPERTY_USERNAME = "postgres.name";
+    private static final String PROPERTY_URL = "postgres.url";
+    private static final String PROPERTY_DRIVER = "postgres.driver";
 
     private CustomDataSource(String driver, String url, String password, String name) {
         this.driver = driver;
@@ -35,7 +40,34 @@ public class CustomDataSource implements DataSource {
     }
 
     public static CustomDataSource getInstance() {
+        if (instance == null) {
+            synchronized (CustomDataSource.class) {
+                if (instance == null) {
+                    Map<String, String> properties = getProperties(PROPERTIES_PATH, PROPERTY_URL,
+                            PROPERTY_USERNAME, PROPERTY_PASSWORD);
+                    instance = new CustomDataSource(properties.get(PROPERTY_DRIVER) ,properties.get(PROPERTY_URL),
+                            properties.get(PROPERTY_USERNAME), properties.get(PROPERTY_URL));
+                }
+            }
+        }
         return instance;
+    }
+
+    private static Map<String, String> getProperties(String path, String... propName) {
+        Map<String, String> mapProperties = null;
+        try (InputStream propsStream = new FileInputStream(PROPERTIES_PATH)) {
+            Properties properties = new Properties();
+            properties.load(propsStream);
+            mapProperties = new HashMap<>();
+            for (String s : propName) {
+                mapProperties.put(s, properties.getProperty(s));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return mapProperties;
     }
 
     @Override

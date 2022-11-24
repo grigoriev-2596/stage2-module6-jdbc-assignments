@@ -24,7 +24,7 @@ public class SimpleJDBCRepository {
     private static final String updateUserSQL = "UPDATE users SET firstname = ?, lastname = ?, age = ? WHERE id = ?";
     private static final String deleteUser = "DELETE FROM users WHERE id = ?";
     private static final String findUserByIdSQL = "SELECT * FROM users WHERE id = ?";
-    private static final String findUserByNameSQL = "SELSECT * FROM users WHERE name = ?";
+    private static final String findUserByNameSQL = "SELECT * FROM users WHERE name = ?";
     private static final String findAllUserSQL = "SELECT * FROM users";
 
     public Long createUser(User user) {
