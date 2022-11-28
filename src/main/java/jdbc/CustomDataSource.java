@@ -46,7 +46,7 @@ public class CustomDataSource implements DataSource {
                     Map<String, String> properties = getProperties(PROPERTIES_PATH, PROPERTY_DRIVER, PROPERTY_URL,
                             PROPERTY_USERNAME, PROPERTY_PASSWORD);
                     instance = new CustomDataSource(properties.get(PROPERTY_DRIVER) ,properties.get(PROPERTY_URL),
-                            properties.get(PROPERTY_USERNAME), properties.get(PROPERTY_URL));
+                            properties.get(PROPERTY_PASSWORD), properties.get(PROPERTY_USERNAME));
                 }
             }
         }
