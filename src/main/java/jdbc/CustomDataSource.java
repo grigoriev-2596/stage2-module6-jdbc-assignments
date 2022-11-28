@@ -57,7 +57,7 @@ public class CustomDataSource implements DataSource {
         Map<String, String> mapProperties = null;
         try (InputStream propsStream = new FileInputStream(path)) {
             Properties properties = new Properties();
-            properties.load(propsStream);
+            properties.load(CustomDataSource.class.getClassLoader().getResourceAsStream("app.properties"));
             mapProperties = new HashMap<>();
             for (String s : propName) {
                 mapProperties.put(s, properties.getProperty(s));
