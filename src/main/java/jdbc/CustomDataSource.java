@@ -26,7 +26,7 @@ public class CustomDataSource implements DataSource {
     private final String url;
     private final String name;
     private final String password;
-    private static final String PROPERTIES_PATH = "src/main/resources/app.properties";
+    private static final String PROPERTIES_PATH = "src/test/resources/app.properties";
     private static final String PROPERTY_PASSWORD = "postgres.password";
     private static final String PROPERTY_USERNAME = "postgres.name";
     private static final String PROPERTY_URL = "postgres.url";
@@ -57,7 +57,7 @@ public class CustomDataSource implements DataSource {
         Map<String, String> mapProperties = null;
         try (InputStream propsStream = new FileInputStream(PROPERTIES_PATH)) {
             Properties properties = new Properties();
-            properties.load(CustomDataSource.class.getClassLoader().getResourceAsStream("app.properties"));
+            properties.load(propsStream);
             mapProperties = new HashMap<>();
             for (String s : propName) {
                 mapProperties.put(s, properties.getProperty(s));
