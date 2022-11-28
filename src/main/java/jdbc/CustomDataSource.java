@@ -26,7 +26,7 @@ public class CustomDataSource implements DataSource {
     private final String url;
     private final String name;
     private final String password;
-    private static final String PROPERTIES_PATH = "src/test/resources/app.properties";
+    private static final String PROPERTIES_PATH = "src/main/resources/app.properties";
     private static final String PROPERTY_PASSWORD = "postgres.password";
     private static final String PROPERTY_USERNAME = "postgres.name";
     private static final String PROPERTY_URL = "postgres.url";
@@ -43,7 +43,7 @@ public class CustomDataSource implements DataSource {
         if (instance == null) {
             synchronized (CustomDataSource.class) {
                 if (instance == null) {
-                    Map<String, String> properties = getProperties(PROPERTIES_PATH, PROPERTY_URL,
+                    Map<String, String> properties = getProperties(PROPERTIES_PATH, PROPERTY_DRIVER, PROPERTY_URL,
                             PROPERTY_USERNAME, PROPERTY_PASSWORD);
                     instance = new CustomDataSource(properties.get(PROPERTY_DRIVER) ,properties.get(PROPERTY_URL),
                             properties.get(PROPERTY_USERNAME), properties.get(PROPERTY_URL));
@@ -55,13 +55,14 @@ public class CustomDataSource implements DataSource {
 
     private static Map<String, String> getProperties(String path, String... propName) {
         Map<String, String> mapProperties = null;
-        try (InputStream propsStream = new FileInputStream(PROPERTIES_PATH)) {
+        try (InputStream propsStream = new FileInputStream(path)) {
             Properties properties = new Properties();
             properties.load(propsStream);
             mapProperties = new HashMap<>();
             for (String s : propName) {
                 mapProperties.put(s, properties.getProperty(s));
             }
+            System.out.println(mapProperties.toString());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
